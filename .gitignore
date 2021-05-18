@@ -79,6 +79,7 @@ dist
 
 # IDE / Editor
 .idea
+.editorconfig
 
 # Service worker
 sw.*
@@ -88,3 +89,12 @@ sw.*
 
 # Vim swap files
 *.swp
+
+# VS Code config
+.vscode
+
+# Useful snippets
+.snippets
+
+# Prettier config file
+.prettierrc.json

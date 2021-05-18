@@ -23,6 +23,8 @@
         "./*"
       ]
     },
+    // Needed for when importing JSON files
+    "resolveJsonModule": true,
     "types": [
       "@nuxt/types",
       "@nuxtjs/axios",
