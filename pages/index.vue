@@ -1,36 +1,32 @@
 <template>
   <div class="container">
-    <div>
-      <Logo />
-      <h1 class="title">
-        mekaniko-frontend
-      </h1>
-      <div class="links">
-        <a
-          href="https://nuxtjs.org/"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="button--green"
-        >
-          Documentation
-        </a>
-        <a
-          href="https://github.com/nuxt/nuxt.js"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="button--grey"
-        >
-          GitHub
-        </a>
-      </div>
-    </div>
+    <input v-model="searchQuery" placeholder="Search for a place">
+    <p>Query is: {{ searchQuery }}</p>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 
-export default Vue.extend({})
+export default Vue.extend({
+  data () {
+    return {
+      searchQuery: '',
+      searchResults: []
+    }
+  },
+  mounted () {
+    this.searchPlaces('amagerbrogade', 'geojson')
+  },
+  methods: {
+    async searchPlaces (query:string, format?:string) {
+      // search?q=amagerbrogade&format=geojson
+      // query:string, format?:string, limit?:string
+      // const response = await this.$api.nominatim.searchPlaces(query, format)
+      // console.log(response)
+    }
+  }
+})
 </script>
 
 <style>
@@ -38,6 +34,7 @@ export default Vue.extend({})
   margin: 0 auto;
   min-height: 100vh;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   text-align: center;
