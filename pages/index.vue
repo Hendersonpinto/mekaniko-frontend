@@ -56,9 +56,7 @@ export default Vue.extend({
       }, 1100)
     },
     async getReverseLocation () {
-      console.log('wta')
       const response = await this.$api.nominatim.reverseGeocode(this.userLat, this.userLon, true, 'json', 18)
-      console.log(response)
       if (response) {
         this.userLocation = response.display_name
       } else {
