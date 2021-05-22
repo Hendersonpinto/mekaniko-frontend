@@ -1,28 +1,11 @@
 <template>
   <div class="container">
-    <div>
-      <Logo />
-      <h1 class="title">
-        mekaniko-frontend
-      </h1>
-      <div class="links">
-        <a
-          href="https://nuxtjs.org/"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="button--green"
-        >
-          Documentation
-        </a>
-        <a
-          href="https://github.com/nuxt/nuxt.js"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="button--grey"
-        >
-          GitHub
-        </a>
-      </div>
+    <input v-model="searchQuery" placeholder="Search for a place" @keyup="searchPlaces(searchQuery, true, 'json', 10)">
+    <p>Query is: {{ searchQuery }}</p>
+    <div v-if="searchQuery !== ''">
+      <p v-for="(address, index) in searchResults" :key="index">
+        {{ address.display_name }}
+      </p>
     </div>
   </div>
 </template>
@@ -30,7 +13,34 @@
 <script lang="ts">
 import Vue from 'vue'
 
-export default Vue.extend({})
+const timer: ReturnType<typeof setTimeout> = setTimeout(() => '', 1000)
+
+export default Vue.extend({
+  data () {
+    return {
+      searchQuery: '',
+      searchResults: [],
+      lastTimeCalled: new Date(),
+      timeBetweenCalls: 1050,
+      timer
+    }
+  },
+  methods: {
+    async searchPlaces (query:string, addressDetails?:boolean, format?:string, limit?:number) {
+      clearTimeout(this.timer)
+      const now = new Date()
+      if (now.getTime() - this.lastTimeCalled.getTime() >= this.timeBetweenCalls) {
+        this.lastTimeCalled = now
+        const response = await this.$api.nominatim.searchPlaces(query, addressDetails, format, limit)
+        this.searchResults = response
+      }
+      this.timer = setTimeout(async () => {
+        const response = await this.$api.nominatim.searchPlaces(query, addressDetails, format, limit)
+        this.searchResults = response
+      }, 1100)
+    }
+  }
+})
 </script>
 
 <style>
@@ -38,6 +48,7 @@ export default Vue.extend({})
   margin: 0 auto;
   min-height: 100vh;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   text-align: center;
