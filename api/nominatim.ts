@@ -1,18 +1,17 @@
-// We need to use curly braces to import a non default exported interface
 import { NuxtAxiosInstance } from '@nuxtjs/axios'
+import { Params } from '~/types/api/Params'
+// We need to use curly braces to import a non default exported interface
 
 const baseUrl = 'https://nominatim.openstreetmap.org'
 
 export default ($axios: NuxtAxiosInstance) => ({
 
   searchPlaces (query:string, format?:string, limit?:string) {
-    return $axios.$get(`${baseUrl}/search`, {
-      params: {
-        q: query,
-        format: format || '',
-        limit: limit || '1'
-      }
-    })
+    const params = { q: query } as Params
+    limit && (params.limit = limit)
+    format && (params.format = format)
+
+    return $axios.$get(`${baseUrl}/search`, { params })
   }
 
   // create(payload) {

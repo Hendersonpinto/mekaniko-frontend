@@ -16,14 +16,12 @@ export default Vue.extend({
     }
   },
   mounted () {
-    this.searchPlaces('amagerbrogade', 'geojson')
+    this.searchPlaces('london', 'geojson', '30')
   },
   methods: {
-    async searchPlaces (query:string, format?:string) {
-      // search?q=amagerbrogade&format=geojson
-      // query:string, format?:string, limit?:string
-      // const response = await this.$api.nominatim.searchPlaces(query, format)
-      // console.log(response)
+    async searchPlaces (query:string, format?:string, limit?:string) {
+      const response = await this.$api.nominatim.searchPlaces(query, format, limit)
+      console.log(response)
     }
   }
 })
