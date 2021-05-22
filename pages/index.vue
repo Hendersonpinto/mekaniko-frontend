@@ -22,9 +22,7 @@ export default Vue.extend({
       searchResults: [],
       lastTimeCalled: new Date(),
       timeBetweenCalls: 1050,
-      timer,
-      timeOutSet: false,
-      timeoutInLine: false
+      timer
     }
   },
   methods: {
@@ -35,22 +33,12 @@ export default Vue.extend({
         this.lastTimeCalled = now
         const response = await this.$api.nominatim.searchPlaces(query, addressDetails, format, limit)
         this.searchResults = response
-        this.timeOutSet = true
       }
       this.timer = setTimeout(async () => {
         const response = await this.$api.nominatim.searchPlaces(query, addressDetails, format, limit)
         this.searchResults = response
       }, 1100)
     }
-    // throttle (func:any, timeFrame:number) {
-    //   return (...args:any[]) => {
-    //     const now = new Date()
-    //     if (now.getTime() - this.lastTime.getTime() >= timeFrame) {
-    //       this.searchPlaces(...args)
-    //       this.lastTime = now
-    //     }
-    //   }
-    // }
   }
 })
 </script>

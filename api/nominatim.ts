@@ -14,21 +14,4 @@ export default ($axios: NuxtAxiosInstance) => ({
 
     return $axios.$get(`${baseUrl}/search`, { params })
   }
-
-  // create(payload) {
-  //   return $axios.$post(`/posts`, payload)
-  // },
-
-  // show(id) {
-  //   return $axios.$get(`/posts/${id}`)
-  // },
-
-  // update(payload, id) {
-  //   return $axios.$put(`/posts/${id}`, payload)
-  // },
-
-  // delete(id) {
-  //   return $axios.$delete(`/posts/${id}`)
-  // }
-
 })
