@@ -2,6 +2,17 @@
   <div class="container">
     <input v-model="searchQuery" placeholder="Search for a place" @keyup="searchPlaces(searchQuery, true, 'json', 10)">
     <p>Query is: {{ searchQuery }}</p>
+    <button @click="locateMe">
+      Get my location
+    </button>
+    <p v-if="gettingLocation">
+      getting location
+    </p>
+    <p v-if="userLocation !== ''">
+      {{ userLocation }}
+    </p>
+    <p>{{ userLat }}</p>
+    <p>{{ userLon }}</p>
     <div v-if="searchQuery !== ''">
       <p v-for="(address, index) in searchResults" :key="index">
         {{ address.display_name }}
@@ -22,7 +33,12 @@ export default Vue.extend({
       searchResults: [],
       lastTimeCalled: new Date(),
       timeBetweenCalls: 1050,
-      timer
+      timer,
+      userLat: 0,
+      userLon: 0,
+      userLocation: '',
+      gettingLocation: false,
+      errorMessage: null as null | string
     }
   },
   methods: {
@@ -38,6 +54,38 @@ export default Vue.extend({
         const response = await this.$api.nominatim.searchPlaces(query, addressDetails, format, limit)
         this.searchResults = response
       }, 1100)
+    },
+    async getReverseLocation () {
+      console.log('wta')
+      const response = await this.$api.nominatim.reverseGeocode(this.userLat, this.userLon, true, 'json', 18)
+      console.log(response)
+      if (response) {
+        this.userLocation = response.display_name
+      } else {
+        this.errorMessage = "Couldn't find your location"
+      }
+    },
+    getLocation () {
+      return new Promise((resolve, reject) => {
+        if (!('geolocation' in navigator)) {
+          this.errorMessage = 'Geolocation is not available.'
+          reject(new Error('Geolocation is not available.'))
+        }
+        navigator.geolocation.getCurrentPosition((pos) => {
+          this.userLat = pos.coords.latitude
+          this.userLon = pos.coords.longitude
+          this.getReverseLocation()
+          resolve(pos)
+        }, (err) => {
+          this.errorMessage = err.message
+          reject(err)
+        })
+      })
+    },
+    async locateMe () {
+      this.gettingLocation = true
+      await this.getLocation()
+      this.gettingLocation = false
     }
   }
 })
