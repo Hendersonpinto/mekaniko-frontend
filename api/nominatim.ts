@@ -6,11 +6,12 @@ const baseUrl = 'https://nominatim.openstreetmap.org'
 
 export default ($axios: NuxtAxiosInstance) => ({
 
-  searchPlaces (query:string, addressDetails?:boolean, format?:string, limit?:number) {
+  searchPlaces (query:string, addressDetails?:boolean, format?:string, limit?:number, country?:string) {
     const params = { q: query } as Params
     limit && (params.limit = limit.toString())
     format && (params.format = format)
     addressDetails && (params.addressdetails = '1')
+    country && (params.countrycodes = country)
 
     return $axios.$get(`${baseUrl}/search`, { params })
   },

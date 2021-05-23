@@ -5,4 +5,5 @@ export type Params = {
   limit?:string
   addressdetails?:string
   zoom?:number
+  countrycodes?:string
 }
