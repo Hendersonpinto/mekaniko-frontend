@@ -41,17 +41,30 @@ export default Vue.extend({
       errorMessage: null as null | string
     }
   },
+  mounted () {
+    this.getUserEstimatedLocation()
+  },
   methods: {
-    async searchPlaces (query:string, addressDetails?:boolean, format?:string, limit?:number) {
+    async getUserEstimatedLocation () {
+      const ipAddress = await this.$axios.$get('https://api.ipify.org?format=json')
+      const accessKey = '933fd114c6d7f25a6736d2ffef400cd9'
+      const geocodedAddress = await this.$axios.$get(`http://api.ipstack.com/${ipAddress.ip}?access_key=${accessKey}`)
+      if (geocodedAddress) {
+        this.userLat = geocodedAddress.latitude
+        this.userLon = geocodedAddress.longitude
+        this.getReverseLocation()
+      }
+    },
+    async searchPlaces (query:string, addressDetails?:boolean, format?:string, limit?:number, countrycodes?:string) {
       clearTimeout(this.timer)
       const now = new Date()
       if (now.getTime() - this.lastTimeCalled.getTime() >= this.timeBetweenCalls) {
         this.lastTimeCalled = now
-        const response = await this.$api.nominatim.searchPlaces(query, addressDetails, format, limit)
+        const response = await this.$api.nominatim.searchPlaces(query, addressDetails, format, limit, countrycodes)
         this.searchResults = response
       }
       this.timer = setTimeout(async () => {
-        const response = await this.$api.nominatim.searchPlaces(query, addressDetails, format, limit)
+        const response = await this.$api.nominatim.searchPlaces(query, addressDetails, format, limit, countrycodes)
         this.searchResults = response
       }, 1100)
     },
@@ -66,8 +79,8 @@ export default Vue.extend({
     getLocation () {
       return new Promise((resolve, reject) => {
         if (!('geolocation' in navigator)) {
-          this.errorMessage = 'Geolocation is not available.'
-          reject(new Error('Geolocation is not available.'))
+          this.errorMessage = 'Geolocation is not available. Using an estimated location instead.'
+          reject(new Error('Geolocation is not available. Using an estimated location instead.'))
         }
         navigator.geolocation.getCurrentPosition((pos) => {
           this.userLat = pos.coords.latitude
