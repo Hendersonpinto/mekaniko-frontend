@@ -13,6 +13,17 @@ export default {
     link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }]
   },
 
+  publicRuntimeConfig: {
+    ipfyUrl: process.env.IPIFY_URL,
+    // I have to add them to publicRuntimeConfig as well to enable them on the client side
+    ipStackAccessKey: process.env.IP_STACK_ACCESS_KEY,
+    ipStackUrl: 'http://api.ipstack.com',
+    nominatimUrl: 'https://nominatim.openstreetmap.org'
+  },
+  privateRuntimeConfig: {
+    ipStackAccessKey: process.env.IP_STACK_ACCESS_KEY
+  },
+
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: [],
 

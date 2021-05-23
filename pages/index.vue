@@ -46,9 +46,12 @@ export default Vue.extend({
   },
   methods: {
     async getUserEstimatedLocation () {
-      const ipAddress = await this.$axios.$get('https://api.ipify.org?format=json')
-      const accessKey = '933fd114c6d7f25a6736d2ffef400cd9'
-      const geocodedAddress = await this.$axios.$get(`http://api.ipstack.com/${ipAddress.ip}?access_key=${accessKey}`)
+      const ipAddress = await this.$axios.$get(this.$config.ipfyUrl)
+      // This gets undefined because even though it exists in the env file, we don't have a package to load them automatically in process.env
+      // However, Nuxt will load them automatically to process.env inside of nuxt.config.js
+      // const accessKey = process.env.IP_STACK_ACCESS_KEY
+      const accessKey = this.$config.ipStackAccessKey
+      const geocodedAddress = await this.$axios.$get(`${this.$config.ipStackUrl}/${ipAddress.ip}?access_key=${accessKey}`)
       if (geocodedAddress) {
         this.userLat = geocodedAddress.latitude
         this.userLon = geocodedAddress.longitude
