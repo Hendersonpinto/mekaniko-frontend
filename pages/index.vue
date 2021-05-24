@@ -18,6 +18,14 @@
         {{ address.display_name }}
       </p>
     </div>
+    <div id="map-wrap" style='height: 50vh; width: 50vw;'>
+      <ClientOnly>
+        <l-map :zoom=12 :center="[userLat, userLon]" :zoom-animation="true">
+          <l-tile-layer url="https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}" :options="mapOptions"></l-tile-layer>
+          <l-marker :lat-lng="[userLat, userLon]"></l-marker>
+        </l-map>
+      </ClientOnly>
+    </div>
   </div>
 </template>
 
@@ -38,7 +46,12 @@ export default Vue.extend({
       userLon: 0,
       userLocation: '',
       gettingLocation: false,
-      errorMessage: null as null | string
+      errorMessage: null as null | string,
+      mapOptions: {
+        id: 'mapbox/streets-v11',
+        accessToken: 'pk.eyJ1IjoiaGVuZGVyc29uY29kZSIsImEiOiJja3AyaW4xMDUwMWl6MndyMjB5ZmIyeGhsIn0.akfTpmwEOlQEEYL-eR1wLA',
+        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+      }
     }
   },
   mounted () {
